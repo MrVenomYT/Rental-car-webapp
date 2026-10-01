@@ -1,30 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { comprehensiveVehicleCatalog, structuredToCarProps } from "../../data/vehicleCatalog";
 import { CarProps } from "@types";
 import AdminDashboard from "@components/AdminDashboard";
-import NavBar from "@components/Navbar";
-import Footer from "@components/Footer";
 
 export default function AdminPage() {
   const [carsList, setCarsList] = useState<CarProps[]>(
     comprehensiveVehicleCatalog.map(structuredToCarProps)
   );
 
-  const handleAddCar = (newCar: CarProps) => {
+  const handleAddCar = async (newCar: CarProps) => {
     setCarsList((prev) => [newCar, ...prev]);
+    try {
+      await fetch("/api/cars", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCar),
+      });
+    } catch (err) {
+      console.error("Failed to persist car", err);
+    }
   };
 
-  const handleDeleteCar = (id: string) => {
+  const handleDeleteCar = async (id: string) => {
     setCarsList((prev) => prev.filter((c) => c.id !== id));
+    try {
+      await fetch(`/api/cars?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      console.error("Failed to delete car", err);
+    }
   };
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <NavBar isAdminActive={true} />
-
+    <main className="min-h-screen bg-slate-100">
       <AdminDashboard
         carsList={carsList}
         onAddCar={handleAddCar}
@@ -33,8 +44,6 @@ export default function AdminPage() {
           window.location.href = "/";
         }}
       />
-
-      <Footer />
     </main>
   );
 }
