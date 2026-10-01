@@ -13,6 +13,12 @@ export interface CarProps {
   model: string;
   transmission: string;
   year: number;
+  price?: number;
+  mileage?: number;
+  location?: string;
+  body_type?: string;
+  id?: string;
+  status?: "available" | "rented" | "maintenance";
 }
 
 export interface FilterProps {
@@ -21,20 +27,14 @@ export interface FilterProps {
   model?: string;
   limit?: number;
   fuel?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  bodyType?: string;
+  location?: string;
 }
 
 export interface HomeProps {
   searchParams: FilterProps;
-}
-
-export interface CarCardProps {
-  model: string;
-  make: string;
-  mpg: number;
-  transmission: string;
-  year: number;
-  drive: string;
-  cityMPG: number;
 }
 
 export interface CustomButtonProps {

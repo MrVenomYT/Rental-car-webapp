@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { Heart } from "lucide-react";
 
 import { calculateCarRent, generateCarImageUrl } from "@utils";
 import { CarProps } from "@types";
@@ -10,86 +11,97 @@ import CarDetails from "./CarDetails";
 
 interface CarCardProps {
   car: CarProps;
+  onToggleFavorite?: (car: CarProps, isFav: boolean) => void;
 }
 
-const CarCard = ({ car }: CarCardProps) => {
+const CarCard = ({ car, onToggleFavorite }: CarCardProps) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
   const carRent = calculateCarRent(city_mpg, year);
+  const carPrice = car.price ? `$${car.price.toLocaleString()}` : `$${(Number(carRent) * 320).toLocaleString()}`;
   const carImageUrl = generateCarImageUrl(car);
 
+  const handleLike = () => {
+    const nextState = !isLiked;
+    setIsLiked(nextState);
+    onToggleFavorite?.(car, nextState);
+  };
+
   return (
-    <div className="car-card group flex flex-col p-6 justify-between items-start text-black-100 bg-white hover:shadow-xl rounded-3xl border border-gray-100 transition-all duration-300 relative overflow-hidden">
-      {/* Header & Heart Toggle */}
+    <div className="car-card group flex flex-col p-6 justify-between items-start text-slate-900 bg-white hover:shadow-xl rounded-3xl border border-slate-100 transition-all duration-300 relative overflow-hidden">
+      {/* Header with Title and Favorite Heart */}
       <div className="w-full flex justify-between items-start gap-2">
         <div>
-          <h2 className="text-[20px] leading-[26px] font-bold capitalize text-slate-900 group-hover:text-primary-blue transition-colors">
-            {make} {model}
-          </h2>
-          <p className="text-xs font-semibold text-slate-400 mt-0.5">{year} Model · {car.class || "Sedan"}</p>
+          <h3 className="text-lg font-bold capitalize text-slate-900 group-hover:text-blue-600 transition-colors">
+            {year} {make} {model}
+          </h3>
+          <p className="text-xs font-semibold text-slate-400 mt-0.5">
+            {car.class || "Sedan"} {car.location ? `· ${car.location}` : "· New York NY"}
+          </p>
         </div>
 
         <button
           type="button"
-          onClick={() => setIsLiked(!isLiked)}
-          className="p-2 rounded-full hover:bg-gray-50 transition-colors"
-          aria-label="Favorite car"
+          onClick={handleLike}
+          className="p-2 rounded-full hover:bg-slate-50 transition-colors cursor-pointer"
+          title="Favorite vehicle"
         >
-          <Image
-            src={isLiked ? "/heart-filled.svg" : "/heart-outline.svg"}
-            width={22}
-            height={22}
-            alt="heart"
+          <Heart
+            className={`w-5 h-5 transition-colors ${
+              isLiked ? "fill-red-500 text-red-500" : "text-slate-400 hover:text-slate-600"
+            }`}
           />
         </button>
       </div>
 
-      {/* Price tag */}
-      <p className="flex mt-4 text-[28px] leading-[32px] font-extrabold text-slate-900">
-        <span className="self-start text-[14px] leading-[17px] font-semibold text-primary-blue">$</span>
-        {carRent}
-        <span className="self-end text-[14px] leading-[17px] font-medium text-slate-500">/day</span>
-      </p>
+      {/* Asking Price Tag */}
+      <div className="mt-3">
+        <p className="text-2xl font-black text-blue-600 tracking-tight">
+          {carPrice}
+          <span className="text-xs text-slate-400 font-semibold ml-2">(${carRent} / day)</span>
+        </p>
+      </div>
 
-      {/* Car Image (Exact match per make/model) */}
-      <div className="relative w-full h-44 my-4 rounded-xl overflow-hidden bg-slate-50 group-hover:bg-blue-50/50 transition-colors">
+      {/* Authentic Isolated Transparent PNG Car Image */}
+      <div className="relative w-full h-44 my-4 flex items-center justify-center">
         <Image
           src={carImageUrl}
-          alt={`${make} ${model}`}
+          alt={`${make} ${model} Authentic Transparent Vehicle Cutout`}
           fill
           priority
           referrerPolicy="no-referrer"
-          className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+          className="object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 
-      {/* Specs & Hover CTA */}
+      {/* Specs Badges */}
       <div className="relative flex w-full mt-2">
-        <div className="flex group-hover:invisible w-full justify-between text-slate-500 pt-2 border-t border-gray-100">
-          <div className="flex flex-col justify-center items-center gap-1.5">
-            <Image src="/steering-wheel.svg" width={18} height={18} alt="steering wheel" />
-            <p className="text-[12px] font-medium">
-              {transmission === "a" ? "Automatic" : "Manual"}
-            </p>
+        <div className="flex group-hover:invisible w-full justify-between text-slate-500 pt-3 border-t border-slate-100 text-xs font-semibold">
+          <div className="flex flex-col items-center gap-1">
+            <Image src="/steering-wheel.svg" width={18} height={18} alt="transmission" />
+            <span>{transmission === "a" ? "Automatic" : "Manual"}</span>
           </div>
-          <div className="flex flex-col justify-center items-center gap-1.5">
-            <Image src="/tire.svg" width={18} height={18} alt="drive" />
-            <p className="text-[12px] font-medium uppercase">{drive}</p>
+
+          <div className="flex flex-col items-center gap-1">
+            <Image src="/tire.svg" width={18} height={18} alt="drivetrain" />
+            <span className="uppercase">{drive}</span>
           </div>
-          <div className="flex flex-col justify-center items-center gap-1.5">
-            <Image src="/gas.svg" width={18} height={18} alt="mpg" />
-            <p className="text-[12px] font-medium">{city_mpg} MPG</p>
+
+          <div className="flex flex-col items-center gap-1">
+            <Image src="/gas.svg" width={18} height={18} alt="fuel" />
+            <span>{car.fuel_type || "Gasoline"}</span>
           </div>
         </div>
 
+        {/* Hover Action Button */}
         <div className="car-card__btn-container">
           <CustomButton
-            title="View Details & Book"
-            containerStyles="w-full py-[14px] rounded-full bg-primary-blue hover:bg-blue-700 transition-colors shadow-md"
-            textStyles="text-white text-[14px] leading-[17px] font-bold"
+            title="View Details Reserve"
+            containerStyles="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 transition-colors shadow-md cursor-pointer"
+            textStyles="text-white text-xs font-bold"
             rightIcon="/right-arrow.svg"
             handleClick={() => setIsOpen(true)}
           />

@@ -1,19 +1,15 @@
 import "./globals.css";
 
-import { Footer, NavBar } from "@components";
-
 export const metadata = {
-  title: "Car Hub",
-  description: "Discover world's best car showcase application",
+  title: "DriveNest Verified Rental and Sales Platform",
+  description: "Find your perfect car and drive your dreams with DriveNest",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en'>
-      <body className='relative'>
-        <NavBar />
+    <html lang="en">
+      <body className="relative">
         {children}
-        <Footer />
       </body>
     </html>
   );

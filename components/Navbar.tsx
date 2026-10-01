@@ -4,38 +4,108 @@ import Link from "next/link";
 import Image from "next/image";
 import CustomButton from "./CustomButton";
 
-const NavBar = () => (
-  <header className='w-full absolute z-20 top-0 left-0 right-0 border-b border-gray-100/50 bg-white/80 backdrop-blur-md transition-all'>
-    <nav className='max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4'>
-      {/* Zone 1: Wordmark Logo */}
-      <Link href='/' className='flex justify-center items-center gap-2 group'>
-        <Image
-          src='/logo.svg'
-          alt='Car Hub Logo'
-          width={118}
-          height={18}
-          className='object-contain transition-transform group-hover:scale-105'
-        />
+interface NavBarProps {
+  favoritesCount?: number;
+  onOpenSellModal?: () => void;
+  onOpenFinancingModal?: () => void;
+  onOpenAdminDashboard?: () => void;
+  onOpenContactModal?: () => void;
+  isAdminActive?: boolean;
+}
+
+const NavBar = ({
+  favoritesCount = 0,
+  onOpenSellModal,
+  onOpenFinancingModal,
+  onOpenAdminDashboard,
+  onOpenContactModal,
+  isAdminActive = false,
+}: NavBarProps) => (
+  <header className="w-full sticky top-0 z-30 bg-white border-b border-slate-100 shadow-xs">
+    <nav className="max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4">
+      {/* Brand Logo */}
+      <Link href="/" className="flex items-center gap-3 group">
+        <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-xs">
+          D
+        </div>
+        <span className="text-xl font-extrabold text-slate-900 tracking-tight">
+          Drive<span className="text-blue-600">Nest</span>
+        </span>
       </Link>
 
-      {/* Zone 2: Navigation Links */}
-      <div className='hidden md:flex items-center gap-8 text-sm font-medium text-slate-600'>
-        <a href='#discover' className='hover:text-primary-blue transition-colors'>Catalogue</a>
-        <a href='#ai-assistant' className='hover:text-primary-blue transition-colors flex items-center gap-1.5'>
-          <span>AI Concierge</span>
-          <span className='px-1.5 py-0.5 text-[10px] font-bold bg-blue-100 text-primary-blue rounded-full'>NEW</span>
+      {/* Navigation Links */}
+      <div className="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
+        <a href="#discover" className="hover:text-blue-600 transition-colors">
+          Buy Cars
         </a>
-        <a href='#how-it-works' className='hover:text-primary-blue transition-colors'>How it Works</a>
-        <a href='#why-us' className='hover:text-primary-blue transition-colors'>Benefits</a>
+        <button
+          type="button"
+          onClick={onOpenSellModal}
+          className="hover:text-blue-600 transition-colors cursor-pointer"
+        >
+          Sell Your Car
+        </button>
+        <button
+          type="button"
+          onClick={onOpenFinancingModal}
+          className="hover:text-blue-600 transition-colors cursor-pointer"
+        >
+          Financing
+        </button>
+        <button
+          type="button"
+          onClick={onOpenContactModal}
+          className="hover:text-blue-600 transition-colors cursor-pointer"
+        >
+          Contact Us
+        </button>
+        <button
+          type="button"
+          onClick={onOpenAdminDashboard}
+          className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+            isAdminActive
+              ? "bg-slate-900 text-white"
+              : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+          }`}
+        >
+          Admin Dashboard
+        </button>
       </div>
 
-      {/* Zone 3: Primary Action */}
-      <div className='flex items-center gap-3'>
+      {/* Right Actions */}
+      <div className="flex items-center gap-4">
+        {/* Heart Favorites Badge */}
+        <a
+          href="#favorites"
+          className="relative p-2 rounded-full hover:bg-slate-50 transition-colors"
+          title="Saved Vehicles"
+        >
+          <Image
+            src="/heart-filled.svg"
+            width={22}
+            height={22}
+            alt="favorites"
+          />
+          {favoritesCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center">
+              {favoritesCount}
+            </span>
+          )}
+        </a>
+
         <CustomButton
-          title='Sign In'
-          btnType='button'
-          containerStyles='text-primary-blue hover:text-white rounded-full bg-blue-50 hover:bg-primary-blue min-w-[120px] font-semibold text-sm transition-all shadow-xs'
+          title="Sign In"
+          btnType="button"
+          containerStyles="text-slate-700 hover:text-blue-600 font-bold text-sm bg-transparent px-3"
         />
+
+        <button
+          type="button"
+          onClick={onOpenSellModal}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+        >
+          List Your Car
+        </button>
       </div>
     </nav>
   </header>
