@@ -83,30 +83,30 @@ export const fuels = [
 
 export const footerLinks = [
   {
-    title: "About",
+    title: "Vehicles",
     links: [
-      { title: "How it works", url: "/" },
-      { title: "Featured", url: "/" },
-      { title: "Partnership", url: "/" },
-      { title: "Business Relation", url: "/" },
+      { title: "Browse Catalog", url: "/cars" },
+      { title: "Modern Fleet (2020 to 2026)", url: "/cars" },
+      { title: "Heritage Classics (1990 to 2009)", url: "/cars" },
+      { title: "Electric & Hybrid", url: "/cars" },
+    ],
+  },
+  {
+    title: "Services",
+    links: [
+      { title: "Sell Your Car", url: "/sell" },
+      { title: "Financing & Loans", url: "/financing" },
+      { title: "Vehicle Consignment", url: "/sell" },
+      { title: "Operations Portal", url: "/admin" },
     ],
   },
   {
     title: "Company",
     links: [
-      { title: "Events", url: "/" },
-      { title: "Blog", url: "/" },
-      { title: "Podcast", url: "/" },
-      { title: "Invite a friend", url: "/" },
-    ],
-  },
-  {
-    title: "Socials",
-    links: [
-      { title: "Discord", url: "/" },
-      { title: "Instagram", url: "/" },
-      { title: "Twitter", url: "/" },
-      { title: "Facebook", url: "/" },
+      { title: "About DriveNest", url: "/about" },
+      { title: "Contact Concierge", url: "/contact" },
+      { title: "Showroom Locations", url: "/contact" },
+      { title: "Trust & Verification", url: "/about" },
     ],
   },
 ];
