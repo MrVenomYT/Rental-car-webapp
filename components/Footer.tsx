@@ -1,29 +1,34 @@
 import Image from "next/image";
 import Link from "next/link";
-
 import { footerLinks } from "@constants";
 
 const Footer = () => (
-  <footer className='flex flex-col text-black-100  mt-5 border-t border-gray-100'>
-    <div className='flex max-md:flex-col flex-wrap justify-between gap-5 sm:px-16 px-6 py-10'>
-      <div className='flex flex-col justify-start items-start gap-6'>
-        <Image src='/logo.svg' alt='logo' width={118} height={18} className='object-contain' />
-        <p className='text-base text-gray-700'>
-          Carhub 2023 <br />
-          All Rights Reserved &copy;
+  <footer className='flex flex-col text-slate-700 bg-slate-900 text-slate-300 mt-20 border-t border-slate-800'>
+    <div className='max-w-[1440px] mx-auto w-full flex max-md:flex-col flex-wrap justify-between gap-10 sm:px-16 px-6 py-16'>
+      <div className='flex flex-col justify-start items-start gap-6 max-w-sm'>
+        <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-2xl inline-block">
+          <Image src='/logo.svg' alt='Car Hub Logo' width={118} height={18} className='object-contain invert brightness-200' />
+        </div>
+        <p className='text-xs text-slate-400 leading-relaxed'>
+          Discover world&apos;s best car showcase and rental application. Instant AI matching, verified vehicles, transparent pricing.
         </p>
+        <div className="flex items-center gap-4 text-xs text-slate-400">
+          <span>San Francisco, CA</span>
+          <span aria-hidden="true">·</span>
+          <span>Support 24/7</span>
+        </div>
       </div>
 
-      <div className="footer__links">
+      <div className="flex-1 w-full flex md:justify-end flex-wrap max-md:mt-10 gap-12">
         {footerLinks.map((item) => (
-          <div key={item.title} className="footer__link">
-            <h3 className="font-bold">{item.title}</h3>
-            <div className="flex flex-col gap-5">
+          <div key={item.title} className="flex flex-col gap-4 min-w-[160px]">
+            <h3 className="font-bold text-white text-sm tracking-wide">{item.title}</h3>
+            <div className="flex flex-col gap-2.5">
               {item.links.map((link) => (
                 <Link
                   key={link.title}
                   href={link.url}
-                  className="text-gray-500"
+                  className="text-xs text-slate-400 hover:text-primary-blue transition-colors"
                 >
                   {link.title}
                 </Link>
@@ -34,15 +39,18 @@ const Footer = () => (
       </div>
     </div>
 
-    <div className='flex justify-between items-center flex-wrap mt-10 border-t border-gray-100 sm:px-16 px-6 py-10'>
-      <p>@2023 CarHub. All rights reserved</p>
+    <div className='max-w-[1440px] mx-auto w-full flex justify-between items-center flex-wrap border-t border-slate-800/80 sm:px-16 px-6 py-8 text-xs text-slate-500'>
+      <p>© 2026 CarHub. All rights reserved.</p>
 
-      <div className="footer__copyrights-link">
-        <Link href="/" className="text-gray-500">
-          Privacy & Policy
+      <div className="flex gap-8 max-sm:mt-4">
+        <Link href="/" className="hover:text-slate-300 transition-colors">
+          Privacy Policy
         </Link>
-        <Link href="/" className="text-gray-500">
-          Terms & Condition
+        <Link href="/" className="hover:text-slate-300 transition-colors">
+          Terms of Service
+        </Link>
+        <Link href="/" className="hover:text-slate-300 transition-colors">
+          Cookie Settings
         </Link>
       </div>
     </div>

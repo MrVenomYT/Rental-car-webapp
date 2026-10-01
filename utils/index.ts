@@ -16,15 +16,13 @@ export const sampleCars: CarProps[] = [
 ];
 
 export const calculateCarRent = (city_mpg: number, year: number) => {
-  const basePricePerDay = 50; // Base rental price per day in dollars
-  const mileageFactor = 0.1; // Additional rate per mile driven
-  const ageFactor = 0.05; // Additional rate per year of vehicle age
+  const basePricePerDay = 50;
+  const mileageFactor = 0.1;
+  const ageFactor = 0.05;
 
-  // Calculate additional rate based on mileage and age
   const mileageRate = city_mpg * mileageFactor;
   const ageRate = (new Date().getFullYear() - year) * ageFactor;
 
-  // Calculate total rental rate per day
   const rentalRatePerDay = basePricePerDay + mileageRate + ageRate;
 
   return rentalRatePerDay.toFixed(0);
@@ -80,6 +78,69 @@ export async function fetchCars(filters: FilterProps) {
 }
 
 export const generateCarImageUrl = (car: CarProps, angle?: string) => {
-  // Uses /hero.png locally or dynamic car renders
+  const make = car.make ? car.make.toLowerCase() : "";
+  const model = car.model ? car.model.toLowerCase() : "";
+
+  // Exact car models mapped to high quality unique automotive photography
+  if (make === "toyota" && model.includes("corolla")) {
+    return "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "honda" && model.includes("accord")) {
+    return "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "bmw" && (model.includes("m3") || model.includes("m5"))) {
+    return "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "audi" && model.includes("a4")) {
+    return "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "ford" && model.includes("explorer")) {
+    return "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "ford" && model.includes("mustang")) {
+    return "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "volkswagen" && model.includes("jetta")) {
+    return "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "jeep" && (model.includes("cherokee") || model.includes("wrangler"))) {
+    return "https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "subaru" && model.includes("impreza")) {
+    return "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "hyundai" && model.includes("elantra")) {
+    return "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "tesla" && model.includes("3")) {
+    return "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80";
+  }
+  if (make === "tesla" && model.includes("y")) {
+    return "https://images.unsplash.com/photo-1570356528233-b44267e224e7?auto=format&fit=crop&w=1200&q=80";
+  }
+
+  // Make-based distinct images
+  const makeImages: Record<string, string> = {
+    toyota: "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?auto=format&fit=crop&w=1200&q=80",
+    honda: "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=1200&q=80",
+    bmw: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80",
+    audi: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=80",
+    ford: "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=1200&q=80",
+    volkswagen: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1200&q=80",
+    jeep: "https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?auto=format&fit=crop&w=1200&q=80",
+    subaru: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80",
+    hyundai: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1200&q=80",
+    tesla: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80",
+    mercedes: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80",
+    porsche: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+    nissan: "https://images.unsplash.com/photo-1609521263047-f8d205293f24?auto=format&fit=crop&w=1200&q=80",
+    chevrolet: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80",
+  };
+
+  if (makeImages[make]) {
+    return makeImages[make];
+  }
+
+  // Fallback to hero asset
   return "/hero.png";
 };

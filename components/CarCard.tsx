@@ -16,51 +16,81 @@ const CarCard = ({ car }: CarCardProps) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const carRent = calculateCarRent(city_mpg, year);
+  const carImageUrl = generateCarImageUrl(car);
 
   return (
-    <div className="car-card group">
-      <div className="car-card__content">
-        <h2 className="car-card__content-title">
-          {make} {model}
-        </h2>
+    <div className="car-card group flex flex-col p-6 justify-between items-start text-black-100 bg-white hover:shadow-xl rounded-3xl border border-gray-100 transition-all duration-300 relative overflow-hidden">
+      {/* Header & Heart Toggle */}
+      <div className="w-full flex justify-between items-start gap-2">
+        <div>
+          <h2 className="text-[20px] leading-[26px] font-bold capitalize text-slate-900 group-hover:text-primary-blue transition-colors">
+            {make} {model}
+          </h2>
+          <p className="text-xs font-semibold text-slate-400 mt-0.5">{year} Model · {car.class || "Sedan"}</p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsLiked(!isLiked)}
+          className="p-2 rounded-full hover:bg-gray-50 transition-colors"
+          aria-label="Favorite car"
+        >
+          <Image
+            src={isLiked ? "/heart-filled.svg" : "/heart-outline.svg"}
+            width={22}
+            height={22}
+            alt="heart"
+          />
+        </button>
       </div>
 
-      <p className='flex mt-6 text-[32px] leading-[38px] font-extrabold'>
-        <span className='self-start text-[14px] leading-[17px] font-semibold'>$</span>
+      {/* Price tag */}
+      <p className="flex mt-4 text-[28px] leading-[32px] font-extrabold text-slate-900">
+        <span className="self-start text-[14px] leading-[17px] font-semibold text-primary-blue">$</span>
         {carRent}
-        <span className='self-end text-[14px] leading-[17px] font-medium'>/day</span>
+        <span className="self-end text-[14px] leading-[17px] font-medium text-slate-500">/day</span>
       </p>
 
-      <div className='relative w-full h-40 my-3 object-contain'>
-        <Image src={generateCarImageUrl(car)} alt='car model' fill priority className='object-contain' />
+      {/* Car Image (Exact match per make/model) */}
+      <div className="relative w-full h-44 my-4 rounded-xl overflow-hidden bg-slate-50 group-hover:bg-blue-50/50 transition-colors">
+        <Image
+          src={carImageUrl}
+          alt={`${make} ${model}`}
+          fill
+          priority
+          referrerPolicy="no-referrer"
+          className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+        />
       </div>
 
-      <div className='relative flex w-full mt-2'>
-        <div className='flex group-hover:invisible w-full justify-between text-grey'>
-          <div className='flex flex-col justify-center items-center gap-2'>
-            <Image src='/steering-wheel.svg' width={20} height={20} alt='steering wheel' />
-            <p className='text-[14px] leading-[17px]'>
+      {/* Specs & Hover CTA */}
+      <div className="relative flex w-full mt-2">
+        <div className="flex group-hover:invisible w-full justify-between text-slate-500 pt-2 border-t border-gray-100">
+          <div className="flex flex-col justify-center items-center gap-1.5">
+            <Image src="/steering-wheel.svg" width={18} height={18} alt="steering wheel" />
+            <p className="text-[12px] font-medium">
               {transmission === "a" ? "Automatic" : "Manual"}
             </p>
           </div>
-          <div className="car-card__icon">
-            <Image src="/tire.svg" width={20} height={20} alt="seat" />
-            <p className="car-card__icon-text">{drive.toUpperCase()}</p>
+          <div className="flex flex-col justify-center items-center gap-1.5">
+            <Image src="/tire.svg" width={18} height={18} alt="drive" />
+            <p className="text-[12px] font-medium uppercase">{drive}</p>
           </div>
-          <div className="car-card__icon">
-            <Image src="/gas.svg" width={20} height={20} alt="seat" />
-            <p className="car-card__icon-text">{city_mpg} MPG</p>
+          <div className="flex flex-col justify-center items-center gap-1.5">
+            <Image src="/gas.svg" width={18} height={18} alt="mpg" />
+            <p className="text-[12px] font-medium">{city_mpg} MPG</p>
           </div>
         </div>
 
         <div className="car-card__btn-container">
           <CustomButton
-            title='View More'
-            containerStyles='w-full py-[16px] rounded-full bg-primary-blue'
-            textStyles='text-white text-[14px] leading-[17px] font-bold'
-            rightIcon='/right-arrow.svg'
+            title="View Details & Book"
+            containerStyles="w-full py-[14px] rounded-full bg-primary-blue hover:bg-blue-700 transition-colors shadow-md"
+            textStyles="text-white text-[14px] leading-[17px] font-bold"
+            rightIcon="/right-arrow.svg"
             handleClick={() => setIsOpen(true)}
           />
         </div>
