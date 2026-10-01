@@ -1,0 +1,8 @@
+{
+  "name": "Car Hub - Rental Car Showcase",
+  "description": "Discover and search world's best car showcase and rental application.",
+  "requestPermissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
