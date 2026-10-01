@@ -1,4 +1,5 @@
 import { MouseEventHandler } from "react";
+export * from "./vehicle";
 
 export interface CarProps {
   city_mpg: number;
@@ -19,6 +20,16 @@ export interface CarProps {
   body_type?: string;
   id?: string;
   status?: "available" | "rented" | "maintenance";
+  generation?: string;
+  trim?: string;
+  vehicle_class?: string;
+  seating_capacity?: number;
+  doors?: number;
+  color?: string;
+  is_electric?: boolean;
+  is_hybrid?: boolean;
+  daily_rental_price?: number | null;
+  image_url?: string;
 }
 
 export interface FilterProps {

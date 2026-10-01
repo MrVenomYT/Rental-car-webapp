@@ -36,6 +36,7 @@ export default function Home() {
   // Search Filter State
   const [activeBrand, setActiveBrand] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
+  const [activeEra, setActiveEra] = useState<string>("all");
   const [searchQueryMake, setSearchQueryMake] = useState("");
   const [searchQueryModel, setSearchQueryModel] = useState("");
 
@@ -93,9 +94,30 @@ export default function Home() {
       return;
     }
     const filtered = sampleCars.filter((car) =>
-      car.class.toLowerCase().includes(catName.toLowerCase())
+      car.class.toLowerCase().includes(catName.toLowerCase()) ||
+      (car.body_type && car.body_type.toLowerCase().includes(catName.toLowerCase()))
     );
     setCarsList(filtered.length > 0 ? filtered : sampleCars);
+  };
+
+  const handleEraSelect = (era: string) => {
+    setActiveEra(era);
+    if (era === "all") {
+      setCarsList(sampleCars);
+      return;
+    }
+    if (era === "modern") {
+      setCarsList(sampleCars.filter((car) => car.year >= 2020 && car.year <= 2026));
+      return;
+    }
+    if (era === "contemporary") {
+      setCarsList(sampleCars.filter((car) => car.year >= 2010 && car.year < 2020));
+      return;
+    }
+    if (era === "classic") {
+      setCarsList(sampleCars.filter((car) => car.year >= 1990 && car.year < 2010));
+      return;
+    }
   };
 
   if (isAdminView) {
@@ -149,30 +171,87 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block mb-1">
-              Curated Inventory
+              Verified Real World Inventory (1990 to 2026)
             </span>
-            <h2 className="text-3xl font-black text-slate-900">Featured Listings</h2>
+            <h2 className="text-3xl font-black text-slate-900">Featured Vehicle Catalog</h2>
           </div>
 
           <a
             href="#discover"
-            onClick={() => setCarsList(sampleCars)}
+            onClick={() => {
+              setActiveEra("all");
+              setActiveBrand("");
+              setActiveCategory("");
+              setCarsList(sampleCars);
+            }}
             className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
           >
-            View All Vehicles ({carsList.length})
+            View Complete Catalog ({carsList.length} Vehicles)
           </a>
+        </div>
+
+        {/* Historical Timeline Era Selector */}
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          <button
+            type="button"
+            onClick={() => handleEraSelect("all")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeEra === "all"
+                ? "bg-slate-900 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            All Model Years (1990 to 2026)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleEraSelect("modern")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeEra === "modern"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            2020 to 2026 Modern Fleet
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleEraSelect("contemporary")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeEra === "contemporary"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            2010 to 2019 Contemporary
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleEraSelect("classic")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeEra === "classic"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            1990 to 2009 Heritage Classics
+          </button>
         </div>
 
         {/* Filter Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 mb-8">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
             <span>Filter By Spec:</span>
-            {(activeBrand || activeCategory || searchQueryMake || searchQueryModel) && (
+            {(activeBrand || activeCategory || searchQueryMake || searchQueryModel || activeEra !== "all") && (
               <button
                 type="button"
                 onClick={() => {
                   setActiveBrand("");
                   setActiveCategory("");
+                  setActiveEra("all");
                   setSearchQueryMake("");
                   setSearchQueryModel("");
                   setCarsList(sampleCars);

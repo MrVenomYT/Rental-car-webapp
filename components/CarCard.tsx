@@ -20,7 +20,7 @@ const CarCard = ({ car, onToggleFavorite }: CarCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  const carRent = calculateCarRent(city_mpg, year);
+  const carRent = car.daily_rental_price || calculateCarRent(city_mpg, year);
   const carPrice = car.price ? `$${car.price.toLocaleString()}` : `$${(Number(carRent) * 320).toLocaleString()}`;
   const carImageUrl = generateCarImageUrl(car);
 
@@ -35,18 +35,25 @@ const CarCard = ({ car, onToggleFavorite }: CarCardProps) => {
       {/* Header with Title and Favorite Heart */}
       <div className="w-full flex justify-between items-start gap-2">
         <div>
-          <h3 className="text-lg font-bold capitalize text-slate-900 group-hover:text-blue-600 transition-colors">
-            {year} {make} {model}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-bold capitalize text-slate-900 group-hover:text-blue-600 transition-colors">
+              {year} {make} {model}
+            </h3>
+            {car.generation && (
+              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-extrabold text-[10px] tracking-wide">
+                {car.generation}
+              </span>
+            )}
+          </div>
           <p className="text-xs font-semibold text-slate-400 mt-0.5">
-            {car.class || "Sedan"} {car.location ? `· ${car.location}` : "· New York NY"}
+            {car.trim ? `${car.trim} · ` : ""}{car.body_type || car.class || "Sedan"} {car.location ? `· ${car.location}` : "· New York NY"}
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleLike}
-          className="p-2 rounded-full hover:bg-slate-50 transition-colors cursor-pointer"
+          className="p-2 rounded-full hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
           title="Favorite vehicle"
         >
           <Heart
@@ -60,8 +67,8 @@ const CarCard = ({ car, onToggleFavorite }: CarCardProps) => {
       {/* Asking Price Tag */}
       <div className="mt-3">
         <p className="text-2xl font-black text-blue-600 tracking-tight">
-          {carPrice}
-          <span className="text-xs text-slate-400 font-semibold ml-2">(${carRent} / day)</span>
+          ${carRent} <span className="text-xs text-slate-400 font-semibold">/ day</span>
+          <span className="text-xs text-slate-400 font-semibold ml-2">({carPrice} buy)</span>
         </p>
       </div>
 
@@ -92,7 +99,7 @@ const CarCard = ({ car, onToggleFavorite }: CarCardProps) => {
 
           <div className="flex flex-col items-center gap-1">
             <Image src="/gas.svg" width={18} height={18} alt="fuel" />
-            <span>{car.fuel_type || "Gasoline"}</span>
+            <span className="capitalize">{car.fuel_type || "Gasoline"}</span>
           </div>
         </div>
 

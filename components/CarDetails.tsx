@@ -3,7 +3,7 @@
 import { Fragment, useState, useEffect } from "react";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
-import { Sparkles, CheckCircle2 } from "lucide-react";
+import { Sparkles, CheckCircle2, ShieldCheck, UserCheck } from "lucide-react";
 import { CarProps } from "@types";
 import { calculateCarRent, generateCarImageUrl } from "@utils";
 
@@ -24,7 +24,7 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
   const [includeInsurance, setIncludeInsurance] = useState(true);
   const [bookedSuccess, setBookedSuccess] = useState(false);
 
-  const dailyPrice = Number(calculateCarRent(car.city_mpg, car.year));
+  const dailyPrice = car.daily_rental_price || Number(calculateCarRent(car.city_mpg, car.year));
   const insurancePrice = includeInsurance ? 15 : 0;
   const totalPrice = dailyPrice * days + insurancePrice * days;
   const carImageUrl = generateCarImageUrl(car);
@@ -105,12 +105,22 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                   </div>
 
                   <div>
-                    <span className="px-2.5 py-1 bg-blue-600 text-white font-bold text-[10px] rounded-lg uppercase tracking-wider">
-                      {car.make} Verified Listing
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 bg-blue-600 text-white font-bold text-[10px] rounded-lg uppercase tracking-wider">
+                        {car.make} Verified Specification
+                      </span>
+                      {car.generation && (
+                        <span className="px-2.5 py-1 bg-slate-100 text-slate-700 font-extrabold text-[10px] rounded-lg">
+                          Gen: {car.generation}
+                        </span>
+                      )}
+                    </div>
                     <h2 className="text-2xl font-black text-slate-900 mt-1 capitalize">
-                      {car.year} {car.make} {car.model}
+                      {car.year} {car.make} {car.model} {car.trim ? `· ${car.trim}` : ""}
                     </h2>
+                    <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                      {car.vehicle_class || "Standard"} Category · {car.color || "Authentic Finish"} · Verified Schema
+                    </p>
                   </div>
                 </div>
 
@@ -118,11 +128,11 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                 <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-xs">
                   <div className="flex items-center gap-1.5 font-bold text-blue-600 mb-1 tracking-wide uppercase">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Gemini AI Concierge Insights</span>
+                    <span>Gemini AI Vehicle Evaluation</span>
                   </div>
                   {loadingAi ? (
                     <p className="text-slate-500 text-xs italic animate-pulse">
-                      Generating real time vehicle analysis and driving recommendations...
+                      Generating historical evaluation and generation specific driving dynamics...
                     </p>
                   ) : aiInsights ? (
                     <p className="text-slate-700 whitespace-pre-line text-xs leading-relaxed font-medium">
@@ -130,46 +140,76 @@ const CarDetails = ({ isOpen, closeModal, car }: CarDetailsProps) => {
                     </p>
                   ) : (
                     <p className="text-slate-600 text-xs">
-                      Excellent option combining reliability, smooth performance, and city fuel efficiency.
+                      Factory verified specification. Engineered with manufacturer tuned chassis, responsive transmission, and balanced ride dynamics.
                     </p>
                   )}
                 </div>
 
-                {/* Technical Specs */}
+                {/* Structured Technical Specs */}
                 <div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-3">Vehicle Specifications</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <h3 className="font-bold text-slate-900 text-sm mb-3">Structured Technical Specifications</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <p className="text-slate-400 text-[10px] font-bold uppercase">Transmission</p>
-                      <p className="text-slate-900 font-bold text-xs capitalize">
+                      <p className="text-slate-900 font-bold capitalize">
                         {car.transmission === "a" ? "Automatic" : "Manual"}
                       </p>
                     </div>
 
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <p className="text-slate-400 text-[10px] font-bold uppercase">Drivetrain</p>
-                      <p className="text-slate-900 font-bold text-xs uppercase">{car.drive}</p>
+                      <p className="text-slate-900 font-bold uppercase">{car.drive}</p>
+                    </div>
+
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <p className="text-slate-400 text-[10px] font-bold uppercase">Engine Displacement</p>
+                      <p className="text-slate-900 font-bold">
+                        {car.displacement ? `${car.displacement}L` : "Electric Powertrain"}
+                      </p>
                     </div>
 
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <p className="text-slate-400 text-[10px] font-bold uppercase">City Mileage</p>
-                      <p className="text-slate-900 font-bold text-xs">{car.city_mpg} MPG</p>
+                      <p className="text-slate-900 font-bold">{car.city_mpg} MPG</p>
                     </div>
 
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <p className="text-slate-400 text-[10px] font-bold uppercase">Highway Mileage</p>
-                      <p className="text-slate-900 font-bold text-xs">{car.highway_mpg} MPG</p>
-                    </div>
-
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                      <p className="text-slate-400 text-[10px] font-bold uppercase">Engine Cylinders</p>
-                      <p className="text-slate-900 font-bold text-xs">{car.cylinders || 4} Cylinders</p>
+                      <p className="text-slate-900 font-bold">{car.highway_mpg} MPG</p>
                     </div>
 
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <p className="text-slate-400 text-[10px] font-bold uppercase">Fuel Type</p>
-                      <p className="text-slate-900 font-bold text-xs capitalize">{car.fuel_type}</p>
+                      <p className="text-slate-900 font-bold capitalize">{car.fuel_type}</p>
                     </div>
+
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <p className="text-slate-400 text-[10px] font-bold uppercase">Seating Capacity</p>
+                      <p className="text-slate-900 font-bold">{car.seating_capacity || 5} Passengers</p>
+                    </div>
+
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <p className="text-slate-400 text-[10px] font-bold uppercase">Doors</p>
+                      <p className="text-slate-900 font-bold">{car.doors || 4} Doors</p>
+                    </div>
+
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <p className="text-slate-400 text-[10px] font-bold uppercase">Vehicle Class</p>
+                      <p className="text-slate-900 font-bold capitalize">{car.vehicle_class || car.class || "Compact"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rental Terms Card */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-wrap items-center justify-between gap-4 text-xs">
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="w-4 h-4 text-blue-600" />
+                    <span className="font-semibold text-slate-700">Minimum Driver Age: 21 Years</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-blue-600" />
+                    <span className="font-semibold text-slate-700">Security Deposit Required at Counter</span>
                   </div>
                 </div>
 
